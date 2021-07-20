@@ -1,4 +1,5 @@
 ﻿using Entities.Concrete;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -17,5 +18,6 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<Color>  Colors { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Car> Cars { get; set; }
+       
     }
 }
