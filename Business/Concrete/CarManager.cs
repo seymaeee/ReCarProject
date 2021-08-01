@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entity.DTOs;
@@ -17,36 +19,49 @@ namespace Business.Concrete
         {
             _carDal = carDal;
         }
-        public void Add(Car car)
+        public IResult Add(Car car)
         {
+            if (car.CarName.Length < 2)
+            {
+                return new ErrorResult(Messages.CarNameInvalid);
+            }
             _carDal.Add(car);
-        }
 
+            return new SuccessResult(Messages.CarAdded);
+        }
         public void Delete(Car car)
         {
             _carDal.Delete(car);
         }
 
-        public List<Car> GetAll()
+        public IDataResult<List<Car>> GetAll()
         {
-
-            return _carDal.GetAll();
+            if (DateTime.Now.Hour==16)
+            {
+                return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
+            }
+            return  new SuccessDataResult<List<Car>>(_carDal.GetAll(),Messages.CarsListed);
         }
 
-        public List<Car> GetCarByCarName()
+        public IDataResult<List<Car>> GetByCarName(string carName)
         {
-            return _carDal.GetAll(); // Where(p => p.CarName == "renault").ToList();
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(p=>p.CarName==carName)); 
         }
 
-        public List<Car> GetCarByUnitPrice()
+        public IDataResult<List<Car>> GetByUnitPrice(decimal min,decimal max)
         {
-            return _carDal.GetAll();
-                //.Where(p => p.UnitPrice > 180).ToList();
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(p=>p.UnitPrice>min && p.UnitPrice< max));
+                
         }
 
-        public List<CarDetailDto> GetCarDetails()
+        public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
-            return _carDal.GetCarDetails();
+            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails());
+        }
+
+        public void Update(Car car)
+        {
+            throw new NotImplementedException();
         }
     }
 
