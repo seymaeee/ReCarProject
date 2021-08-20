@@ -29,18 +29,18 @@ namespace Business.Concrete
 
             return new SuccessResult(Messages.CarAdded);
         }
-        public void Delete(Car car)
+        public IResult Delete(Car car)
         {
             _carDal.Delete(car);
+            return new SuccessResult(Messages.CarDeleted);
         }
-
         public IDataResult<List<Car>> GetAll()
         {
-            if (DateTime.Now.Hour==16)
+            if (DateTime.Now.Hour == 15)
             {
                 return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
             }
-            return  new SuccessDataResult<List<Car>>(_carDal.GetAll(),Messages.CarsListed);
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarsListed);
         }
 
         public IDataResult<List<Car>> GetByCarName(string carName)
@@ -59,11 +59,17 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails());
         }
 
-        public void Update(Car car)
+        public IResult Update(Car car)
         {
-            throw new NotImplementedException();
+            
+            _carDal.Update(car);
+                return new SuccessResult(Messages.CarUpdated);
+
         }
+
+       
     }
+    
 
 }
 

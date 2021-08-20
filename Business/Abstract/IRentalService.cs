@@ -13,6 +13,5 @@ namespace Business.Abstract
         IResult Update(Rental rental);
         IDataResult<List<Rental>> GetAll(); //İşlem sonucu,message,ve araba listesini döndürücek.
         IDataResult<List<Rental>> GetByRentalId (int id);
-      
     }
 }
