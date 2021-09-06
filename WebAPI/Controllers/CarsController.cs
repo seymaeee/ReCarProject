@@ -16,62 +16,37 @@ namespace WebAPI.Controllers
     public class CarsController : ControllerBase
     {
         ICarService _carService;
-
         public CarsController(ICarService carService)
         {
             _carService = carService;
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet("getall")]
         public IActionResult GetAll()
         {
-           
             var result = _carService.GetAll();
             if (result.Success)
             {
                 return Ok(result);
-            }
+             }
             return BadRequest(result);
         }
-
-        [HttpGet("GetByCarName")]
-        public IActionResult GetByCarName(string carName)
-        {
-            var result = _carService.GetByCarName(carName);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-        [HttpGet("GetByUnitPrice")]
-        public IActionResult UnitPrice(decimal max,decimal min)
-        {
-            var result = _carService.GetByUnitPrice( max, min );
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-        [HttpGet("GetCarDetails")]
-        public IActionResult GetCarDetails()
-        {
-            var result = _carService.GetCarDetails();
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-        [HttpPost("add")]
+        [HttpPost("Add")]
         public IActionResult Add(Car car)
         {
             var result = _carService.Add(car);
-            if(result.Success)
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);    
+        }
+
+        [HttpPost("Update")]
+        public IActionResult Update(Car car)
+        {
+            var result = _carService.Update(car);
+            if (result.Success)
             {
                 return Ok(result);
             }
@@ -82,6 +57,18 @@ namespace WebAPI.Controllers
         public IActionResult Delete(Car car)
         {
             var result = _carService.Delete(car);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
+        [HttpGet("GetByUnitPrice")]
+        public IActionResult GetByUnitPrice(decimal min, decimal max)
+        {
+            var result = _carService.GetByUnitPrice(min,max);
 
             if (result.Success)
             {
@@ -90,10 +77,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("Update")]
-        public IActionResult Update(Car car)
+        [HttpGet("GetByCarName")]
+        public IActionResult GetByCarName(string CarName)
         {
-            var result = _carService.Update(car);
+            var result = _carService.GetByCarName(CarName);
 
             if (result.Success)
             {
@@ -102,4 +89,11 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
     }
+
 }
+    
+       
+    
+
+  
+

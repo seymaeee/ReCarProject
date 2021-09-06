@@ -11,29 +11,30 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RentalsController : ControllerBase
+    public class CarImagesController : ControllerBase
     {
-        IRentalService _rentalService;
+        ICarImageService _carImageService;
 
-       public RentalsController(IRentalService rentalService)
+        public CarImagesController(ICarImageService carImageService)
         {
-            _rentalService = rentalService;
+            _carImageService = carImageService;
         }
 
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            var result = _rentalService.GetAll();
+            var result = _carImageService.GetAll();
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result);
         }
-        [HttpPost("Add")]
-        public IActionResult Add(Rental rental )
+
+        [HttpGet("GetByCarImageId")]
+        public IActionResult GetByCarImageId()
         {
-            var result = _rentalService.Add(rental);
+            var result = _carImageService.GetAll();
             if (result.Success)
             {
                 return Ok(result);
@@ -41,44 +42,40 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("Update")]
-        public IActionResult Update(Rental rental)
+        [HttpDelete("Add")]
+        public IActionResult Add(CarImage carImage)
         {
-            var result = _rentalService.Update(rental);
+            var result = _carImageService.Add(carImage);
             if (result.Success)
             {
                 return Ok(result);
+
             }
             return BadRequest(result);
         }
 
-        [HttpPost("Delete")]
-        public IActionResult Delete(Rental rental)
+        [HttpDelete("Delete")]
+        public IActionResult Delete(CarImage carImage)
         {
-            var result = _rentalService.Delete(rental);
+            var result = _carImageService.Delete(carImage);
             if (result.Success)
             {
                 return Ok(result);
+
             }
             return BadRequest(result);
         }
 
-
-        [HttpGet("GetByRentalId")]
-        public IActionResult GetByRentalId(int id)
+        [HttpDelete("Update")]
+        public IActionResult Update(CarImage carImage)
         {
-            var result = _rentalService.GetByRentalId(id);
-
+            var result = _carImageService.Update (carImage);
             if (result.Success)
             {
                 return Ok(result);
+
             }
             return BadRequest(result);
         }
-
-       
     }
-
 }
-    
-
