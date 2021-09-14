@@ -1,8 +1,10 @@
-﻿using Entity.Concrete;
-using FluentValidation;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Entity.Concrete;
+using FluentValidation;
 
 namespace Business.ValidationRules.FluentValidation
 {
@@ -10,7 +12,8 @@ namespace Business.ValidationRules.FluentValidation
     {
         public CarImageValidator()
         {
-            //RuleFor(p => p.Id)();
+            RuleFor(c => c.CarId).NotEmpty();
+            RuleFor(c => c.ImagePath).NotEmpty();
         }
     }
 }

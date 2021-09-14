@@ -1,9 +1,12 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Entity.Concrete;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,10 +17,12 @@ namespace WebAPI.Controllers
     public class CarImagesController : ControllerBase
     {
         ICarImageService _carImageService;
+        IWebHostEnvironment _webHostEnvironment;
 
-        public CarImagesController(ICarImageService carImageService)
+        public CarImagesController(ICarImageService carImageService, IWebHostEnvironment webHostEnvironment)
         {
             _carImageService = carImageService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet("getall")]
@@ -31,10 +36,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("GetByCarImageId")]
-        public IActionResult GetByCarImageId()
+        [HttpGet("GetByCarId")]
+        public IActionResult GetByCarId(int id)
         {
-            var result = _carImageService.GetAll();
+            var result = _carImageService.GetByCarId(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -43,39 +48,106 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("Add")]
-        public IActionResult Add(CarImage carImage)
-        {
-            var result = _carImageService.Add(carImage);
-            if (result.Success)
-            {
-                return Ok(result);
 
+        public IActionResult Add([FromForm] CarImage carImage, IFormFile image)
+        {
+            try
+            {
+                string path = DefaultImage.DefaultImageFolder;
+                string fileNameWithGUID = $"{Guid.NewGuid().ToString()}{Path.GetExtension(image.FileName)}";
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                using (FileStream fileStream = System.IO.File.Create(Path.Combine(path, fileNameWithGUID)))
+                {
+                    image.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
+                carImage.ImagePath = Path.Combine(path, fileNameWithGUID);
+
+                var result = _carImageService.Add(carImage);
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
             }
-            return BadRequest(result);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
+       
 
         [HttpDelete("Delete")]
-        public IActionResult Delete(CarImage carImage)
+        public IActionResult Delete([FromForm] CarImage carImage)
         {
-            var result = _carImageService.Delete(carImage);
-            if (result.Success)
+            try
             {
-                return Ok(result);
+                if (!System.IO.File.Exists(carImage.ImagePath))
+                {
+                    throw new FileNotFoundException();
+                }
+                System.IO.File.Delete(carImage.ImagePath);
+
+                var result = _carImageService.Delete(carImage);
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
 
             }
-            return BadRequest(result);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         [HttpDelete("Update")]
-        public IActionResult Update(CarImage carImage)
+        public IActionResult Update([FromForm] CarImage carImage, IFormFile image)
         {
-            var result = _carImageService.Update (carImage);
-            if (result.Success)
+            try
             {
-                return Ok(result);
+                string path = DefaultImage.DefaultImageFolder;
+                string fileNameWithGUID = $"{Guid.NewGuid().ToString()}{Path.GetExtension(image.FileName)}";
+                var iresult = _carImageService.GetAll().Data.Where(c => c.Id == carImage.Id).Any();
 
+                if (iresult)
+                {
+                    if (!System.IO.File.Exists(carImage.ImagePath))
+                    {
+                        throw new FileNotFoundException();
+                    }
+                    System.IO.File.Delete(carImage.ImagePath);
+                    using (FileStream fileStream = System.IO.File.Create(Path.Combine(path, fileNameWithGUID)))
+                    {
+                        image.CopyTo(fileStream);
+                        fileStream.Flush();
+                    }
+                    carImage.ImagePath = Path.Combine(path, fileNameWithGUID);
+                    var result = _carImageService.Update(carImage);
+                    if (result.Success)
+                    {
+                        return Ok(result);
+                    }
+                    return BadRequest(result);
+                }
+                return BadRequest(iresult);
             }
-            return BadRequest(result);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
     }
 }

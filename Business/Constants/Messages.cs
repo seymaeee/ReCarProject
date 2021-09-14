@@ -1,4 +1,5 @@
 ﻿using Entities.Concrete;
+using Entity.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +16,10 @@ namespace Business.Constants
         public static string CarRental = "Araba kiralanabilir";
         public static string CarDeleted = "Arabanın kaydı silindi";
         public static string CarUpdated = "Arabanın kaydı güncellendi";
-
         public static string CarNotAdded = "Araba Eklenemez";
+        public static string CarImageLimit = "Max 5 resim yüklenebilir";
+        public static string CarImageAdded = "Resim Yüklendi";
+        public static string CarImagesListed = "Araba resimleri listelendi";
+        public static string CarImagesNot = "Resim bulunmuyor";
     }
 }

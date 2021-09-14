@@ -12,6 +12,6 @@ namespace Business.Abstract
         IResult Update(CarImage carImage);
         IResult Delete(CarImage carImage);
         IDataResult<List<CarImage>> GetAll(); //İşlem sonucu,message,ve araba listesini döndürücek.
-        IDataResult<List<CarImage>> GetByCarImageId(int id);
+        IDataResult<List<CarImage>> GetByCarId(int id);
     }
 }
